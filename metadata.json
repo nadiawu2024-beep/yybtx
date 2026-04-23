@@ -1,0 +1,6 @@
+{
+  "name": "萌萌听写官",
+  "description": "一个可爱、互动的语音报听写应用，专为小学生设计。支持拍照识字、语音翻页，让听写变得有趣又简单。",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["OCR", "TTS", "STT"]
+}
