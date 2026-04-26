@@ -180,7 +180,7 @@ export default function App() {
       const prompt = `提取图片中的所有汉字。1. 如果提取到的是单个汉字，请为每个字生成一个常用的2-4字词组。2. 如果提取到的是现成的词组，则直接保留。3. 请只返回汉字列表。输出格式：JSON数组，例如 ["词语1", "词语2"]`;
       
       const response = await genAI.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-1.5-flash",
         contents: {
           parts: [
             { inlineData: { data: base64Data, mimeType } },
