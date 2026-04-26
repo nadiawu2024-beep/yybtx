@@ -19,16 +19,6 @@ import {
   Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GoogleGenAI, Type } from "@google/genai";
-
-// Initialize Gemini API with environment variable compatibility
-// In AI Studio environment, GEMINI_API_KEY is provided in process.env
-const API_KEY = (process.env as any).GEMINI_API_KEY || ((import.meta as any).env && (import.meta as any).env.VITE_GEMINI_API_KEY);
-
-if (!API_KEY) {
-  console.warn("[萌萌听写官] 警告: 未检测到 API Key。请确保环境变量中设置了 GEMINI_API_KEY 或 VITE_GEMINI_API_KEY。");
-}
-const genAI = new GoogleGenAI({ apiKey: API_KEY || "" });
 
 // Types
 interface WordItem {
@@ -170,43 +160,30 @@ export default function App() {
   };
 
   const processImageWithGemini = async (base64Data: string, mimeType: string) => {
-    if (!API_KEY) {
-      alert("错误：未找到 API Key。如果你部署在 Vercel，请确保添加了名为 VITE_GEMINI_API_KEY 的环境变量。");
-      return;
-    }
-    
     setIsProcessingImage(true);
     try {
-      const prompt = `提取图片中的所有汉字。1. 如果提取到的是单个汉字，请为每个字生成一个常用的2-4字词组。2. 如果提取到的是现成的词组，则直接保留。3. 请只返回汉字列表。输出格式：JSON数组，例如 ["词语1", "词语2"]`;
-      
-      const response = await genAI.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: {
-          parts: [
-            { inlineData: { data: base64Data, mimeType } },
-            { text: prompt }
-          ]
+      const response = await fetch('/api/process-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: { type: Type.ARRAY, items: { type: Type.STRING } }
-        }
+        body: JSON.stringify({ base64Data, mimeType }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || errorData.error || '服务器处理失败');
+      }
+
+      const { result } = await response.json();
       
-      const result = JSON.parse(response.text || "[]");
       if (Array.isArray(result)) {
         const newWords = result.map(w => ({ id: Math.random().toString(36).substr(2, 9), text: w }));
         setWords(prev => [...prev, ...newWords]);
       }
     } catch (error: any) {
-      console.error("Gemini OCR 详细错误:", error);
-      let errorMsg = "识别失败，请重试";
-      if (error.message?.includes("API_KEY_INVALID")) {
-        errorMsg = "API Key 无效，请检查设置。";
-      } else if (error.message?.includes("quota")) {
-        errorMsg = "API 调用次数达到上限，请稍后再试。";
-      }
-      alert(`${errorMsg}\n错误详情已打印到控制台。`);
+      console.error("OCR 识别详细错误:", error);
+      alert(`识别失败：${error.message}\n请确保已在 Vercel 环境变量中正确设置了 VITE_GEMINI_API_KEY。`);
     } finally {
       setIsProcessingImage(false);
     }
