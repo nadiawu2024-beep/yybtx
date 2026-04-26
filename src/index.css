@@ -55,3 +55,59 @@
 .animate-pulse-fast {
   animation: pulse 1.5s infinite;
 }
+
+@theme {
+  --color-bg-soft: #FFFDF0;
+  --color-primary-honey: #FFB347;
+  --color-primary-light: #FFD391;
+  --color-secondary-mint: #77DD77;
+  --color-text-main: #4A3728;
+  --color-text-muted: #8C7B6E;
+  --color-card-white: #FFFFFF;
+  
+  --shadow-neo: 8px 8px 0px rgba(74, 55, 40, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-bg-soft text-text-main font-sans;
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pulse-fast {
+  animation: pulse 1.5s infinite;
+}
+
+@theme {
+  --color-bg-soft: #FFFDF0;
+  --color-primary-honey: #FFB347;
+  --color-primary-light: #FFD391;
+  --color-secondary-mint: #77DD77;
+  --color-text-main: #4A3728;
+  --color-text-muted: #8C7B6E;
+  --color-card-white: #FFFFFF;
+  
+  --shadow-neo: 8px 8px 0px rgba(74, 55, 40, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-bg-soft text-text-main font-sans;
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pulse-fast {
+  animation: pulse 1.5s infinite;
+}
